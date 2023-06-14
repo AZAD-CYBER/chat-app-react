@@ -1,20 +1,19 @@
 import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import { useProfile } from '../context/Profile.context';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
-const PrivateRoute = ({ children, ...routeProps }) => {
-  const profile = false;
+const PrivateRoute = ({ element: Element, ...routeProps }) => {
+  const { profile, isLoading } = useProfile();
 
   // Check if the user profile is available
-  if (!profile) {
+  if (!profile && !isLoading) {
     // If the profile is not available, redirect to the "/signin" route using the Navigate component
-    return <Navigate to="/signin" />;
+    return <Redirect to="/signin" />;
   }
 
-  // If the profile is available, render the specified children components within a Route component
-  return <Route {...routeProps}>{children}</Route>;
+  // If the profile is available, render the specified element component within a Route component
+  return <Route {...routeProps} element={<Element />} />;
 };
 
 export default PrivateRoute;
-
-
-// The component receives children and routeProps as props. The children prop represents the components to be rendered within the route, and routeProps contains the route-specific props (such as path, exact, etc
